@@ -31,7 +31,6 @@ func NewEasyCache() *EasyCache {
 
 // key generator is a function that generates key
 // default key generator is located under ./key.go
-
 func (p *EasyCache) SetKeyGenerator(kg func(slug string, params ...string) string) {
 	p.keyGenerator = kg
 }

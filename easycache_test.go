@@ -1,17 +1,16 @@
-package easycache_test
+package easycache
 
 import (
-	"easycache"
-	"easycache/layers"
 	"github.com/allegro/bigcache"
+	"github.com/amhr/easycache/layers"
 	"github.com/go-redis/redis/v8"
 	"strings"
 	"testing"
 	"time"
 )
 
-func GetCacheWithBigCache(t *testing.T) *easycache.EasyCache {
-	ec := easycache.NewEasyCache()
+func GetCacheWithBigCache(t *testing.T) *EasyCache {
+	ec := NewEasyCache()
 	cache, err := bigcache.NewBigCache(bigcache.DefaultConfig(10 * time.Minute))
 	if err != nil {
 		t.Fatalf("big cache external construction %v", err)
@@ -20,8 +19,8 @@ func GetCacheWithBigCache(t *testing.T) *easycache.EasyCache {
 	return ec
 }
 
-func GetCacheWithRedis(t *testing.T) *easycache.EasyCache {
-	ec := easycache.NewEasyCache()
+func GetCacheWithRedis(t *testing.T) *EasyCache {
+	ec := NewEasyCache()
 	rdb := redis.NewClient(&redis.Options{
 		Addr:     "localhost:6379",
 		Password: "", // no password set

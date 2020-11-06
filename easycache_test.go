@@ -88,7 +88,6 @@ func TestResource(t *testing.T) {
 	if resource.counter != 1 {
 		t.Fatalf("too many provide calls. (%d)", resource.counter)
 	}
-
 }
 
 // test resource and provide

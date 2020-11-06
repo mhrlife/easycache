@@ -68,7 +68,7 @@ func TestRedis(t *testing.T) {
 // test resource and provide
 func TestResource(t *testing.T) {
 	ec := GetCacheWithBigCache(t)
-	resource := &CustomResource{
+	resource := &customResource{
 		counter: 0,
 	}
 	ec.AddResource("getUser", resource)
@@ -89,10 +89,23 @@ func TestResource(t *testing.T) {
 	}
 }
 
+// Test resource cannot provide
+func TestResourceError(t *testing.T) {
+	ec := GetCacheWithBigCache(t)
+	resource := &resourceNotFound{}
+	ec.AddResource("getUser", resource)
+	_ , err := ec.Provide("getUser", "2", "3")
+	if _ , ok := err.(CannotProvide); ok {
+
+	}else{
+		t.Fatalf("type is not cannot provide")
+	}
+}
+
 // test resource and provide
 func TestResourceWithThunderherd(t *testing.T) {
 	ec := GetCacheWithBigCache(t)
-	resource := &ResourceWithDelay{
+	resource := &resourceWithDelay{
 		counter: 0,
 	}
 	ec.AddResource("getUser", resource)
@@ -110,30 +123,42 @@ func TestResourceWithThunderherd(t *testing.T) {
 
 }
 
-type CustomResource struct {
+type customResource struct {
 	counter int
 }
 
-func (c *CustomResource) Provider(slug string, params ...string) ([]byte, error) {
+func (c *customResource) Provider(slug string, params ...string) ([]byte, error) {
 	c.counter++
 	return []byte(slug + ":" + strings.Join(params, "-")), nil
 }
 
-func (c CustomResource) Layers() []int {
+func (c customResource) Layers() []int {
 	return []int{0}
 }
 
 // for testing thunder herd
-type ResourceWithDelay struct {
+type resourceWithDelay struct {
 	counter int
 }
 
-func (c *ResourceWithDelay) Provider(slug string, params ...string) ([]byte, error) {
+func (c *resourceWithDelay) Provider(slug string, params ...string) ([]byte, error) {
 	time.Sleep(100 * time.Millisecond)
 	c.counter++
 	return []byte(slug + ":" + strings.Join(params, "-")), nil
 }
 
-func (c ResourceWithDelay) Layers() []int {
+func (c resourceWithDelay) Layers() []int {
+	return []int{0}
+}
+
+// for testing errors
+type resourceNotFound struct {
+}
+
+func (c *resourceNotFound) Provider(slug string, params ...string) ([]byte, error) {
+	return nil, CannotProvide{}
+}
+
+func (c resourceNotFound) Layers() []int {
 	return []int{0}
 }

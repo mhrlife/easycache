@@ -1,8 +1,6 @@
 package easycache
 
 import (
-	"errors"
-	"fmt"
 	"golang.org/x/sync/singleflight"
 	"sync"
 )
@@ -69,7 +67,7 @@ func (p *EasyCache) GetResource(slug string) (Resource, bool) {
 func (p *EasyCache) Provide(slug string, params ...string) ([]byte, error) {
 	r, e := p.GetResource(slug)
 	if !e {
-		return nil, errors.New(fmt.Sprintf("resource not founded %s", slug))
+		return nil, ResourceNotFound{slug: slug}
 	}
 
 	// first try in cache
@@ -96,13 +94,7 @@ func (p *EasyCache) Provide(slug string, params ...string) ([]byte, error) {
 		return b, err
 	}
 	// data is provided, lets set data in cache
-	for layerIndex := range r.Layers() {
-		layer, e := p.GetLayer(layerIndex)
-		if !e {
-			return nil, errors.New(fmt.Sprintf("resource %s looking for undefined layer %d", slug, layerIndex))
-		}
-		layer.Set(p.keyGenerator(slug, params...), b)
-	}
+	p.Set(b, slug, params...)
 	return b, err
 
 }
@@ -135,4 +127,20 @@ func (p *EasyCache) provideByCache(r Resource, slug string, params ...string) ([
 		// otherwise checks other layers
 	}
 	return nil, &ResourceDidntFindInCache{slug: slug}
+}
+
+// set value
+func (p *EasyCache) Set(value []byte, slug string, params ...string) error {
+	r, e := p.GetResource(slug)
+	if !e {
+		return ResourceNotFound{slug: slug}
+	}
+	for layerIndex := range r.Layers() {
+		layer, e := p.GetLayer(layerIndex)
+		if !e {
+			continue
+		}
+		layer.Set(p.keyGenerator(slug, params...), value)
+	}
+	return nil
 }

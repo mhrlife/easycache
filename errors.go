@@ -26,3 +26,18 @@ type ResourceProvideError struct {
 func (r ResourceProvideError) Error() string {
 	return fmt.Sprintf("%s coudnl't provide data", r.slug)
 }
+
+type CannotProvide struct {
+}
+
+func (r CannotProvide) Error() string {
+	return fmt.Sprintf("cannot provide")
+}
+
+type ResourceNotFound struct {
+	slug string
+}
+
+func (r ResourceNotFound) Error() string {
+	return fmt.Sprintf("%s resource not found", r.slug)
+}

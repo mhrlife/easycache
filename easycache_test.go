@@ -80,6 +80,7 @@ func TestResource(t *testing.T) {
 	if string(b) != "getUser:2-3" {
 		t.Fatalf("%s != %s", string(b), "getUser:2-3")
 	}
+
 	ec.Provide("getUser", "2", "3")
 	ec.Provide("getUser", "2", "3")
 	ec.Provide("getUser", "2", "3")

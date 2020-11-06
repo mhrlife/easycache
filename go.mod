@@ -1,4 +1,4 @@
-module github.com/amhr/easycache
+module easycache
 
 go 1.15
 

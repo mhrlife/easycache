@@ -1,9 +1,9 @@
 package easycache_test
 
 import (
+	"easycache"
+	"easycache/layers"
 	"github.com/allegro/bigcache"
-	"github.com/amhr/easycache"
-	"github.com/amhr/easycache/layers"
 	"github.com/go-redis/redis/v8"
 	"strings"
 	"testing"

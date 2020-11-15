@@ -36,22 +36,29 @@ func (c UserInfoResource) Layers() []int {
 ```
 After creating resource we need to create an instance of EasyCache.
 ```
-    import "github.com/go-redis/redis/v8"
-    ...
-    ec := NewEasyCache()
+import (
+    "github.com/go-redis/redis/v8"
+    "github.com/mhrlife/easycache"
+    "github.com/mhrlife/easycache/layers"
+)
+  
+    
+func main(){
+    ec := easycache.NewEasyCache()
     rdb := redis.NewClient(&redis.Options{
 		Addr:     "localhost:6379",
 		Password: "", // no password set
 		DB:       0,  // use default DB
 	})
-	ec.AddLayer(&layers.Redis{
-		Cache: rdb,
-		Ttl:   100 * time.Hour, // ttl of cache
-	})
-	resource := &UserInfoResource{
-		DB: db, // for example gorm.DB
-	}
-	ec.AddResource("userinfo", resource)
+    ec.AddLayer(&layers.Redis{
+        Cache: rdb,
+        Ttl:   100 * time.Hour, // ttl of cache
+    })
+    resource := &UserInfoResource{
+    	DB: db, // for example gorm.DB
+    }
+    ec.AddResource("userinfo", resource)
+}
 ```
 And now we can easily access to user info with
 ```

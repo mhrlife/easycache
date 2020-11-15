@@ -2,8 +2,8 @@ package easycache
 
 import (
 	"github.com/allegro/bigcache"
-	"github.com/mhrlife/easycache/layers"
 	"github.com/go-redis/redis/v8"
+	"github.com/mhrlife/easycache/layers"
 	"strings"
 	"testing"
 	"time"

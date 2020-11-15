@@ -8,6 +8,9 @@ import (
 /**
 Easy Cache
 Author: https://github.com/mhrlife
+
+Desc:
+	Caching layer system
 */
 type EasyCache struct {
 	layers        []CacheLayer

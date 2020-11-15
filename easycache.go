@@ -7,7 +7,7 @@ import (
 
 /**
 Easy Cache
-Author: https://github.com/amhr
+Author: https://github.com/mhrlife
 */
 type EasyCache struct {
 	layers        []CacheLayer

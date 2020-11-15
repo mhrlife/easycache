@@ -2,7 +2,7 @@ package easycache
 
 import (
 	"github.com/allegro/bigcache"
-	"github.com/amhr/easycache/layers"
+	"github.com/mhrlife/easycache/layers"
 	"github.com/go-redis/redis/v8"
 	"strings"
 	"testing"
@@ -89,15 +89,45 @@ func TestResource(t *testing.T) {
 	}
 }
 
+// test resource and provide
+func TestUpdate(t *testing.T) {
+	ec := GetCacheWithBigCache(t)
+	resource := &customResource{
+		counter: 0,
+	}
+	ec.AddResource("getUser", resource)
+	b, err := ec.Provide("getUser", "2", "3")
+	if err != nil {
+		t.Fatalf("error while providing %v", err)
+	}
+	if string(b) != "getUser:2-3" {
+		t.Fatalf("%s != %s", string(b), "getUser:2-3")
+	}
+
+	err = ec.Set([]byte("updated"), "getUser", "2", "3")
+	if err != nil {
+		t.Fatalf("error while setting value %v", err)
+	}
+	b, err = ec.Provide("getUser", "2", "3")
+	if err != nil {
+		t.Fatalf("error while providing %v", err)
+	}
+
+	if string(b) != "updated" {
+		t.Fatalf("%s != %s", string(b), "getUser:2-3")
+	}
+
+}
+
 // Test resource cannot provide
 func TestResourceError(t *testing.T) {
 	ec := GetCacheWithBigCache(t)
 	resource := &resourceNotFound{}
 	ec.AddResource("getUser", resource)
-	_ , err := ec.Provide("getUser", "2", "3")
-	if _ , ok := err.(CannotProvide); ok {
+	_, err := ec.Provide("getUser", "2", "3")
+	if _, ok := err.(CannotProvide); ok {
 
-	}else{
+	} else {
 		t.Fatalf("type is not cannot provide")
 	}
 }

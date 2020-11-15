@@ -1,4 +1,4 @@
-module github.com/amhr/easycache
+module github.com/mhrlife/easycache
 
 go 1.15
 

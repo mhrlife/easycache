@@ -122,6 +122,7 @@ func (p *EasyCache) ForceProvide(slug string, params ...string) ([]byte, error) 
 	}
 	// data is provided, lets set data in cache
 	p.Set(b, slug, params...)
+
 	return b, err
 }
 

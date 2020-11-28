@@ -102,6 +102,29 @@ func (p *EasyCache) Provide(slug string, params ...string) ([]byte, error) {
 
 }
 
+
+// provide data
+// this method is used to update cache.
+func (p *EasyCache) ForceProvide(slug string, params ...string) ([]byte, error) {
+	r, e := p.GetResource(slug)
+	if !e {
+		return nil, ResourceNotFound{slug: slug}
+	}
+
+	// using single flight to provide
+	v, err, _ := p.resourceGroup.Do(p.keyGenerator(slug, params...), func() (interface{}, error) {
+		return p.provideResource(r, slug, params...)
+	})
+	b := v.([]byte)
+	// we had error while providing!
+	if err != nil {
+		return b, err
+	}
+	// data is provided, lets set data in cache
+	p.Set(b, slug, params...)
+	return b, err
+}
+
 // provide data from resource
 func (p *EasyCache) provideResource(r Resource, slug string, params ...string) ([]byte, error) {
 	b, err := r.Provider(slug, params...)

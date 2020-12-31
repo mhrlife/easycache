@@ -8,6 +8,7 @@ import (
 
 type Redis struct {
 	Cache *redis.Client
+	Write *redis.Client
 	Ttl   time.Duration
 }
 
@@ -21,5 +22,5 @@ func (b *Redis) Get(key string) ([]byte, error) {
 }
 
 func (b *Redis) Set(key string, value []byte) error {
-	return b.Cache.Set(context.Background(), key, string(value), b.Ttl).Err()
+	return b.Write.Set(context.Background(), key, string(value), b.Ttl).Err()
 }
